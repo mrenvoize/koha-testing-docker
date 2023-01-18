@@ -284,8 +284,12 @@ if [ "${KOHA_ELASTICSEARCH}" = "yes" ]; then
     ES_FLAG="--elasticsearch"
 fi
 
+if [ "${USE_EXISTING_DB}" = "yes" ]; then
+    USE_EXISTING_DB_FLAG="--use-existing-db"
+fi
+
 perl ${BUILD_DIR}/misc4dev/do_all_you_can_do.pl \
-            --instance          ${KOHA_INSTANCE} ${ES_FLAG} \
+            --instance          ${KOHA_INSTANCE} ${ES_FLAG} ${USE_EXISTING_DB_FLAG} \
             --userid            ${KOHA_USER} \
             --password          ${KOHA_PASS} \
             --marcflavour       ${KOHA_MARC_FLAVOUR} \
