@@ -37,6 +37,8 @@ bookworm:
   - docker build -t koha/koha-testing:main-bookworm --no-cache --rm -f dists/bookworm/Dockerfile .
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
   - docker push koha/koha-testing:main-bookworm
+  - docker tag  koha/koha-testing:main-bookworm koha/koha-testing:main
+  - docker push koha/koha-testing:main
   - docker image rm koha/koha-testing:main-bookworm
   only:
     - main@koha-community/koha-testing-docker
@@ -47,8 +49,6 @@ bullseye:
   - docker build -t koha/koha-testing:main-bullseye --no-cache --rm -f dists/bullseye/Dockerfile .
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
   - docker push koha/koha-testing:main-bullseye
-  - docker tag  koha/koha-testing:main-bullseye koha/koha-testing:main
-  - docker push koha/koha-testing:main
   - docker image rm koha/koha-testing:main-bullseye
   only:
     - main@koha-community/koha-testing-docker
