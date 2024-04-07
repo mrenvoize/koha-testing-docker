@@ -40,12 +40,15 @@ for my $filepath (`git diff --cached --name-only`) {
             my $cmd = q{git grep '/\* keep tidy \*/' } . $filepath;
             $tidy = qx{$cmd};
         }
-        my $prettier_config_file = '/kohadevbox/koha/.prettierrc.js';
-        if ( -e $prettier_config_file ) {
-            $modify_files->{$filepath} = qq{yarn --silent run prettier --config-file $prettier_config_file --write $filepath};
-        }
-        else {
-            $modify_files->{$filepath} = qq{yarn --silent run prettier --trailing-comma es5 --arrow-parens avoid --write $filepath};
+        if ($tidy) {
+            my $prettier_config_file = '/kohadevbox/koha/.prettierrc.js';
+            if ( -e $prettier_config_file ) {
+                $modify_files->{$filepath} =
+                    qq{yarn --silent run prettier --config-file $prettier_config_file --write $filepath};
+            } else {
+                $modify_files->{$filepath} =
+                    qq{yarn --silent run prettier --trailing-comma es5 --arrow-parens avoid --write $filepath};
+            }
         }
     }
     elsif ( $file_ext eq '.ts' ) {
