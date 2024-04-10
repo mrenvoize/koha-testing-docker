@@ -3,3 +3,5 @@ services:
     koha:
         volumes:
             - ${PLUGIN_REPO}:/kohadevbox/koha_plugin
+        environment:
+            - ENABLE_PLUGIN=yes

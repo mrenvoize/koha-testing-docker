@@ -290,6 +290,21 @@ service koha-common start
 service apache2 start
 service rabbitmq-server start || true # Don't crash if rabbitmq-server didn't start
 
+if [ "${ENABLE_PLUGIN}" = "yes" ]; then
+  # uncomment out default plugins dir
+  sed -i "s#<\!--pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir-->#<pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir>#g" /etc/koha/sites/kohadev/koha-conf.xml
+  #restart memcached
+  flush_memcached
+
+  #reload plugins
+  perl ${BUILD_DIR}/koha/misc/devel/install_plugins.pl
+
+  koha-plack --restart ${KOHA_INSTANCE}
+
+  echo -e "\nPlugins Loaded!"
+fi
+
+
 echo "koha-testing-docker has started up and is ready to be enjoyed!"
 
 # if KOHA_PROVE_CPUS is not set, then use nproc
