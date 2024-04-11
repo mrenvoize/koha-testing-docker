@@ -30,9 +30,9 @@ This script lets you manage your KTD environment.
 
 Usage:
 
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] up -d
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] down
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] pull
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso|--localrun] up -d
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso|--localrun] down
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso|--localrun] pull
     $scriptname [--root] --shell
     $scriptname --dbshell
     $scriptname --logs
@@ -54,6 +54,7 @@ Options:
     --wait-ready N        Wait N secs until KTD is up and running
     --proxy               Use the proxied version of the compose file
     --name                Sets the project name
+    --localrun            Start the container with local run.sh file
     --logs                Follow the koha container logs
     --help|-h             Display this help message
 
@@ -166,6 +167,7 @@ ENABLED_SEARCHENGINE=""
 ENABLE_PLUGINS="no"
 ENABLE_SELENIUM="no"
 ENABLE_SSO="no"
+ENABLE_LOCAL_RUN_SCRIPT="no"
 
 KOHA_ELASTICSEARCH="no"
 
@@ -239,6 +241,9 @@ while [ $# -gt 0 ]; do
             WAIT_READY="yes"
             WAIT_TIMEOUT=$2
             break ;;
+        --localrun)
+            ENABLE_LOCAL_RUN_SCRIPT="yes"
+            shift ;;
         -*)
             printf "\nError: expected a docker compose action and got '$1' instead\n\n"
             usage
@@ -342,6 +347,10 @@ else
                 export GIT_WORKTREE_SOURCE="${GIT_WORKTREE_SOURCE%%/.git/worktrees/*}"
                 printf "\nDetected Git worktree. Mounting ${GIT_WORKTREE_SOURCE}.\n\n"
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/worktree.yml"
+            fi
+
+            if [ "$ENABLE_LOCAL_RUN_SCRIPT" != "no" ]; then
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.localrun.yml"
             fi
 
             export KOHA_ELASTICSEARCH="${KOHA_ELASTICSEARCH}"

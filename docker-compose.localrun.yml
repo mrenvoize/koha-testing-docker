@@ -1,0 +1,5 @@
+version: '3'
+services:
+    koha:
+        volumes:
+            - ${KTD_HOME}/files/run.sh:/kohadevbox/run.sh
