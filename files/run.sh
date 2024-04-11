@@ -291,9 +291,16 @@ service apache2 start
 service rabbitmq-server start || true # Don't crash if rabbitmq-server didn't start
 
 if [ "${ENABLE_PLUGIN}" = "yes" ]; then
-  # uncomment out default plugins dir
+
+  # If people set $PLUGIN_REPO as the dir of a single plugin, we still need to load it.
   sed -i "s#<\!--pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir-->#<pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir>#g" /etc/koha/sites/kohadev/koha-conf.xml
-  #restart memcached
+  # Add all cloned plugins in the plugins dir
+  for dir in $(find ${BUILD_DIR}/koha_plugin -maxdepth 1 -type d); do
+    # Append the line to the koha-conf
+    sed -i "/<pluginsdir>/a <pluginsdir>${BUILD_DIR}/koha_plugin/$(basename $dir)</pluginsdir>" /etc/koha/sites/kohadev/koha-conf.xml
+  done
+
+  # Restart memcached
   flush_memcached
 
   #reload plugins
