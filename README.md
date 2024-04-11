@@ -110,6 +110,12 @@ ktd --shell
 ktd --root --shell
 ```
 
+* Get into a DB (mysql) shell
+
+```shell
+ktd --dbshell
+```
+
 * Watching the _koha_ container logs
 
 ```shell

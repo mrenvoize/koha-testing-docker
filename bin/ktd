@@ -34,6 +34,7 @@ Usage:
     $scriptname [--es6|--es7|--es8|--os1|--os2|--plugin|--selenium|--sso] down
     $scriptname [--es6|--es7|--es8|--os1|--os2|--plugin|--selenium|--sso] pull
     $scriptname [--root] --shell
+    $scriptname --dbshell
     $scriptname --logs
     $scriptname -h|--help
 
@@ -48,6 +49,7 @@ Options:
     --selenium            Use a Selenium container
     --sso                 Use a Keycloak container
     --shell               Get into the Koha container
+    --dbshell             Get into the database
     --logs                Follow the koha container logs
     --help|-h             Display this help message
 
@@ -157,6 +159,7 @@ DOCKER_PROJECT="koha"
 
 ROOT_ACCESS="no"
 SHELL_ACCESS="no"
+DBSHELL_ACCESS="no"
 
 FOLLOW_LOGS="no"
 
@@ -202,6 +205,10 @@ while [ $# -gt 0 ]; do
         --shell)
             SHELL_ACCESS="yes"
             shift ;;
+        --dbshell)
+            SHELL_ACCESS="yes"
+            DBSHELL_ACCESS="yes"
+            shift ;;
         -*)
             printf "\nError: expected a docker compose action and got '$1' instead\n\n"
             usage
@@ -217,6 +224,8 @@ if [ "$SHELL_ACCESS" != "no" ]; then
 
     if [ "$ROOT_ACCESS" != "no" ]; then
         docker exec -it koha-koha-1 bash
+    elif [ "$DBSHELL_ACCESS" != "no" ]; then
+	docker exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
     else
         docker exec --user kohadev-koha --workdir /kohadevbox/koha -ti koha-koha-1 bash
     fi
