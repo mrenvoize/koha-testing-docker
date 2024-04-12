@@ -1,4 +1,4 @@
-# koha-testing-docker (a.k.a. KTD)
+# koha-testing-docker (a.k.a. _KTD_)
 
 This project provides a dockered solution for running a Koha ILS development 
 environment inside Docker containers.
@@ -140,7 +140,7 @@ Several option switches are provided for more fine-grained control:
 
 ```shell
 ktd --es7 up
-ktd --selenium --os1 --plugin --sso up
+ktd --selenium --os1 --plugins --sso up
 ```
 
 Note: the `pull` command would also work if you add several option switches. So running:
@@ -164,6 +164,7 @@ The IP address of the web server in your docker group will be variable. Once you
 ```shell
 ip a
 ```
+
 should display the IP address of the webserver. At this point the web interface of Koha can be accessed by going to
 http://<the displayed IP>:8080 for the OPAC
 http://<the displayed IP>:8081 for the Staff interface.
@@ -229,7 +230,7 @@ to test code against another koha branch you should use the `KOHA_IMAGE` environ
 as above.
 
 ```shell
-KOHA_IMAGE=21.05 ktd up
+KOHA_IMAGE=23.11 ktd up
 ```
 
 Please note that you can only use branches defined
@@ -258,7 +259,8 @@ where `<options>` are the valid `ktd` option switches. If your usage requires mo
 check `docker compose --help` or refer to the [Docker compose documentation](https://docs.docker.com/compose/).
 
 ### Developing plugins using ktd
-ktd ships with some nice tools for working with plugins
+
+_KTD_ ships with some nice tools for working with plugins
 
 Please see the [wiki](https://gitlab.com/koha-community/koha-testing-docker/-/wikis/Developing-plugins) for details
 
@@ -291,19 +293,22 @@ You can also add `DEV_INSTALL` and `KOHA_HOME` to your `.env` file so you don't 
 
 Translation files (.po files) have been removed from [the docker container](https://gitlab.com/koha-community/koha-testing-docker/-/issues/386) and [the Koha codebase](https://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=35174).
 
-When ktd container starts up, it will deal with the .po files if needed, depending on the state of misc/translator/po
+When _KTD_ container starts up, it will deal with the .po files if needed, depending on the state of misc/translator/po
+
  1. If empty [koha-l10n](https://gitlab.com/koha-community/koha-l10n) will be cloned
  2. If exists and is a git repository, koha-l10n will be pulled and the corresponding branch will be checked out (if there is no changes!)
  3. If exists and is not a git repository, nothing is done (we are on a branch prior to the removal)
 
-Note that ktd will not automatically remove changes that have been made to the .po files.
+Note that _KTD_ will not automatically remove changes that have been made to the .po files.
 
 ### Update the files
 
 #### Fetch new translations
+
 To manually fetch new translations from koha-l10n (and so Weblate) you can fetch the git repository.
 
 For main:
+
 ```shell
 cd misc/translator/po
 git fetch origin
@@ -313,13 +318,15 @@ git reset --hard origin/main
 #### With new strings
 
 If you want to update the .po files with new strings you have in your Koha codebase (when testing a patch for instance):
+
 ```shell
 # in a koha-shell
 gulp po:update --lang $LANG
 ```
 
 To generate new templates using those new .po files
-```
+
+```shell
 # in a root shell
 koha-translate --update $LANG --dev kohadev
 ```
@@ -327,15 +334,19 @@ koha-translate --update $LANG --dev kohadev
 (Yes, this is confusing)
 
 ### Common problems
+
 #### Detached HEAD
 If you get 'You are not currently on a branch' it means that you are not on a branch. This has been by a previous bug in ktd. You should pull a newest koha-testing-docker docker image 
 
 #### Incorrect permissions
 If misc/translator/po does not have the correct permissions (not owned by kohadev-koha), the gulp command will fail with something similar to
+
 ```
 msgmerge: cannot create output file "misc/translator/po/es-ES-pref.po": Permission denied
 ```
+
 You need to adjust the permissions with
+
 ```shell
 chown -R kohadev-koha:kohadev-koha misc/translator/po
 ```
@@ -343,7 +354,8 @@ chown -R kohadev-koha:kohadev-koha misc/translator/po
 #### Error: ENOENT: no such file or directory, open '/tmp/.../Koha-xxx.pot'
 
 koha-l10n is not up-to-date. You can update with with:
-```
+
+```shell
 cd misc/translator/po
 git fetch origin
 git reset --hard origin/main
@@ -383,7 +395,8 @@ ERROR: Couldn't connect to Docker daemon at http+docker://localhost - is it runn
 ```
 
 ### If starting fails with "database not empty", try running `ktd down` or `kd`
-It's likely that last start of KTD failed and needs cleanup. Or that it was shutdown without `ktd down` or `kd` that are necessary for a clean shutdown.
+
+It's likely that last start of _KTD_ failed and needs cleanup. Or that it was shutdown without `ktd down` or `kd` that are necessary for a clean shutdown.
 
 # Documentation
 
