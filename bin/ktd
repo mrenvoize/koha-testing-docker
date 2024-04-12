@@ -30,9 +30,9 @@ This script lets you manage your KTD environment.
 
 Usage:
 
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugin|--selenium|--sso] up -d
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugin|--selenium|--sso] down
-    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugin|--selenium|--sso] pull
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] up -d
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] down
+    $scriptname [--es6|--es7|--es8|--os1|--os2|--plugins|--selenium|--sso] pull
     $scriptname [--root] --shell
     $scriptname --dbshell
     $scriptname --logs
@@ -45,7 +45,7 @@ Options:
     --es8                 Use an Elasticsearch 8.x container
     --os1                 Use an OpenSearch 1.x container
     --os2                 Use an OpenSearch 2.x container
-    --plugin              Enable plugin development environment
+    --plugins             Enable plugin development environment
     --selenium            Use a Selenium container
     --sso                 Use a Keycloak container
     --shell               Get into the Koha container
@@ -149,7 +149,7 @@ set_arch
 
 ENABLED_SEARCHENGINE=""
 
-ENABLE_PLUGIN="no"
+ENABLE_PLUGINS="no"
 ENABLE_SELENIUM="no"
 ENABLE_SSO="no"
 
@@ -190,8 +190,8 @@ while [ $# -gt 0 ]; do
         --os2)
             set_searchengine "os2"
             shift ;;
-        --plugin)
-            ENABLE_PLUGIN="yes"
+        --plugins)
+            ENABLE_PLUGINS="yes"
             shift ;;
         --selenium)
             ENABLE_SELENIUM="yes"
@@ -253,8 +253,8 @@ else
                 KOHA_ELASTICSEARCH="yes"
             fi
 
-            if [ "$ENABLE_PLUGIN" != "no" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.plugin.yml"
+            if [ "$ENABLE_PLUGINS" != "no" ]; then
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.plugins.yml"
             fi
 
             if [ "$ENABLE_SELENIUM" != "no" ]; then

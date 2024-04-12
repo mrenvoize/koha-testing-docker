@@ -281,6 +281,37 @@ chown -R "${KOHA_INSTANCE}-koha:${KOHA_INSTANCE}-koha" "/var/log/koha/${KOHA_INS
   && echo "    [*] Success chowning /var/log/koha/${KOHA_INSTANCE}" \
   || echo "    [x] Error chowning cache dir /var/log/koha/${KOHA_INSTANCE}"
 
+if [ "${ENABLE_PLUGINS}" = "yes" ]; then
+
+    echo "[plugins] Installing plugins"
+
+    PLUGINS_STRING=""
+    counter=0
+
+    for plugin_dir in $(find ${BUILD_DIR}/plugins -mindepth 1 -maxdepth 1 -type d); do
+
+        echo "    [*] Found: ${plugin_dir}"
+
+	    entry=" <pluginsdir>${BUILD_DIR}/plugins/$(basename $plugin_dir)</pluginsdir>"
+
+        # Append the new plugin's entry
+        if [ "${counter}" -ge 1 ]; then
+	        PLUGINS_STRING="${PLUGINS_STRING}\n${entry}"
+        else
+	        PLUGINS_STRING="${entry}"
+        fi
+
+        counter=$((counter+1))
+    done
+
+    flush_memcached
+    # replace the placeholder with the plugins entries
+    sed -i "s# <!--pluginsdir>YOUR_PLUGIN_DIR_HERE</pluginsdir-->#$(echo "$PLUGINS_STRING")#" /etc/koha/sites/kohadev/koha-conf.xml
+    # run the plugins installer
+    perl ${BUILD_DIR}/koha/misc/devel/install_plugins.pl
+    echo "    [*] Plugins loaded!"
+fi
+
 # Enable and start koha-plack and koha-z3950-responder
 koha-plack           --enable ${KOHA_INSTANCE}
 koha-z3950-responder --enable ${KOHA_INSTANCE}
@@ -289,28 +320,6 @@ service koha-common start
 # Start apache and rabbitmq-server
 service apache2 start
 service rabbitmq-server start || true # Don't crash if rabbitmq-server didn't start
-
-if [ "${ENABLE_PLUGIN}" = "yes" ]; then
-
-  # If people set $PLUGIN_REPO as the dir of a single plugin, we still need to load it.
-  sed -i "s#<\!--pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir-->#<pluginsdir>${BUILD_DIR}/koha_plugin</pluginsdir>#g" /etc/koha/sites/kohadev/koha-conf.xml
-  # Add all cloned plugins in the plugins dir
-  for dir in $(find ${BUILD_DIR}/koha_plugin -maxdepth 1 -type d); do
-    # Append the line to the koha-conf
-    sed -i "/<pluginsdir>/a <pluginsdir>${BUILD_DIR}/koha_plugin/$(basename $dir)</pluginsdir>" /etc/koha/sites/kohadev/koha-conf.xml
-  done
-
-  # Restart memcached
-  flush_memcached
-
-  #reload plugins
-  perl ${BUILD_DIR}/koha/misc/devel/install_plugins.pl
-
-  koha-plack --restart ${KOHA_INSTANCE}
-
-  echo -e "\nPlugins Loaded!"
-fi
-
 
 echo "koha-testing-docker has started up and is ready to be enjoyed!"
 

@@ -1,0 +1,7 @@
+version: '3'
+services:
+    koha:
+        volumes:
+            - ${PLUGINS_DIR}:/kohadevbox/plugins
+        environment:
+            - ENABLE_PLUGINS=yes
