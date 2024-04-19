@@ -149,32 +149,6 @@ then
     ln -s ${BUILD_DIR}/howto/how-to.tt ${BUILD_DIR}/koha/koha-tmpl/intranet-tmpl/prog/en/modules/how-to.tt
 fi
 
-if [[ ${SKIP_L10N} != "yes" ]]; then
-    if [[ ! -z "$KOHA_IMAGE" && ! "$KOHA_IMAGE" =~ ^main ]]; then
-        l10n_branch=${KOHA_IMAGE:0:5}
-    else
-        l10n_branch="main"
-    fi
-
-    set +e
-
-    if [ ! -d "$BUILD_DIR/koha/misc/translator/po" ]; then
-        echo "Cloning koha-l10n into misc/translator/po"
-        git clone --branch ${l10n_branch} https://gitlab.com/koha-community/koha-l10n.git $BUILD_DIR/koha/misc/translator/po
-    elif [ -d "$BUILD_DIR/koha/misc/translator/po/.git" ]; then
-        echo "Fetching koha-l10n"
-        git config --global --add safe.directory $BUILD_DIR/koha/misc/translator/po
-        git -C $BUILD_DIR/koha/misc/translator/po fetch origin
-        git -C $BUILD_DIR/koha/misc/translator/po checkout -B ${l10n_branch} origin/${l10n_branch}
-    fi
-
-    echo "Chowing po files"
-    chown -R "${KOHA_INSTANCE}-koha:${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
-
-    set -e
-
-fi
-
 echo "[cypress] Make the pre-built cypress available to the instance user [HACK]"
 
 mkdir -p "/var/lib/koha/${KOHA_INSTANCE}/.cache" \
@@ -205,6 +179,36 @@ if [[ ! -z "${LOCAL_USER_ID}" && "${LOCAL_USER_ID}" != "1000" ]]; then
     chown -R "${KOHA_INSTANCE}-koha" "/var/lock/koha/${KOHA_INSTANCE}"
     chown -R "${KOHA_INSTANCE}-koha" "/var/log/koha/${KOHA_INSTANCE}"
     chown -R "${KOHA_INSTANCE}-koha" "/var/run/koha/${KOHA_INSTANCE}"
+fi
+
+if [[ ${SKIP_L10N} != "yes" ]]; then
+    if [[ ! -z "$KOHA_IMAGE" && ! "$KOHA_IMAGE" =~ ^main ]]; then
+        l10n_branch=${KOHA_IMAGE:0:5}
+    else
+        l10n_branch="main"
+    fi
+
+    set +e
+
+    echo "[koha-l10n] Handling koha-l10n as requested"
+    echo "    [*] Chowing po files (safety measure)"
+    chown -R "${KOHA_INSTANCE}-koha:${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
+
+    if [ ! -d "$BUILD_DIR/koha/misc/translator/po" ]; then
+        echo "    [*] Cloning koha-l10n into misc/translator/po"
+        sudo koha-shell ${KOHA_INSTANCE} -c "\
+            git clone --branch ${l10n_branch} https://gitlab.com/koha-community/koha-l10n.git $BUILD_DIR/koha/misc/translator/po"
+    elif [ -d "$BUILD_DIR/koha/misc/translator/po/.git" ]; then
+        echo "    [*] Fetching koha-l10n"
+        sudo koha-shell ${KOHA_INSTANCE} -c "\
+            git config --global --add safe.directory $BUILD_DIR/koha/misc/translator/po ; \
+            git -C $BUILD_DIR/koha/misc/translator/po fetch origin ; \
+            git -C $BUILD_DIR/koha/misc/translator/po checkout -B ${l10n_branch} origin/${l10n_branch}"
+    fi
+
+    set -e
+else
+    echo "[koha-l10n] Skipping"
 fi
 
 echo "[API logging] Set TRACE to API log4perl config"
