@@ -50,10 +50,10 @@ git clone https://gitlab.com/koha-community/koha-testing-docker.git koha-testing
 
 ```shell
 cd $PROJECTS_DIR
-git clone --branch master --single-branch https://git.koha-community.org/Koha-community/Koha.git koha
+git clone --branch main --single-branch https://git.koha-community.org/Koha-community/Koha.git koha
 ```
 
-**Note:** this will do a shallow clone only fetching the master branch to speed up the process. Alternatively, you could do a full clone with
+**Note:** this will do a shallow clone only fetching the main branch to speed up the process. Alternatively, you could do a full clone with
 
 ```shell
 git clone https://git.koha-community.org/Koha-community/Koha.git koha
@@ -218,7 +218,7 @@ because it doesn't free the prompt until the process is stopped.
 
 ## Running the right branch
 
-By default the _KTD_ that will start up is configured to work for the master branch of Koha.  If you want to run an image
+By default the _KTD_ that will start up is configured to work for the main branch of Koha.  If you want to run an image
 to test code against another koha branch you should use the `KOHA_IMAGE` environment variable before starting the image 
 as above.
 
@@ -297,11 +297,11 @@ Note that ktd will not automatically remove changes that have been made to the .
 #### Fetch new translations
 To manually fetch new translations from koha-l10n (and so Weblate) you can fetch the git repository.
 
-For master:
+For main:
 ```shell
 cd misc/translator/po
 git fetch origin
-git reset --hard origin/master
+git reset --hard origin/main
 ```
 
 #### With new strings
@@ -340,7 +340,7 @@ koha-l10n is not up-to-date. You can update with with:
 ```
 cd misc/translator/po
 git fetch origin
-git reset --hard origin/master
+git reset --hard origin/main
 ```
 
 #### Error: ENOENT: no such file or directory, stat '[...]how-to.pl'
@@ -355,7 +355,7 @@ This is the kind of output you will have when ktd starts up after a gulp po:upda
 koha-koha-1       | Install Koha-how-to
 koha-koha-1       | Fetching koha-l10n
 koha-koha-1       | From https://gitlab.com/koha-community/koha-l10n
-koha-koha-1       |    37ed79d3..c4cc4e86  master      -> origin/master
+koha-koha-1       |    37ed79d3..c4cc4e86  main        -> origin/main
 koha-koha-1       |    23095e8c..0470ed29  21.11       -> origin/21.11
 koha-koha-1       |    23aab8b2..154a1a8c  22.05       -> origin/22.05
 koha-koha-1       |    7b797c63..8d4a7671  22.11       -> origin/22.11

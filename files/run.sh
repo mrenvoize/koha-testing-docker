@@ -150,10 +150,10 @@ then
 fi
 
 if [[ ${SKIP_L10N} != "yes" ]]; then
-    if [[ ! -z "$KOHA_IMAGE" && ! "$KOHA_IMAGE" =~ ^master ]]; then
+    if [[ ! -z "$KOHA_IMAGE" && ! "$KOHA_IMAGE" =~ ^main ]]; then
         l10n_branch=${KOHA_IMAGE:0:5}
     else
-        l10n_branch="master"
+        l10n_branch="main"
     fi
 
     set +e

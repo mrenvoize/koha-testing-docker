@@ -113,12 +113,12 @@ set_image()
 {
     if [ "$ARCH" = "arm64v8" ] ; then
 
-        # if master, then explicitly set to master-bullseye
-        if [ "$KOHA_IMAGE" == "master" ] || [ -z "${KOHA_IMAGE}" ] ; then
-            KOHA_IMAGE="master-bullseye"
+        # if main, then explicitly set to main-bullseye
+        if [ "$KOHA_IMAGE" == "main" ] || [ -z "${KOHA_IMAGE}" ] ; then
+            KOHA_IMAGE="main-bullseye"
         fi
 
-        # append $ARCH, eg: 'master-bullseye-arm64v8'
+        # append $ARCH, eg: 'main-bullseye-arm64v8'
         export KOHA_IMAGE="${KOHA_IMAGE}-${ARCH}"
 
         # tweak used memcached image

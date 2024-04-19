@@ -131,8 +131,8 @@ RUN yarn global add gulp-cli swagger-cli
 
 # Embed /kohadevbox/node_modules
 RUN cd /kohadevbox \
-    && wget -q https://gitlab.com/koha-community/Koha/-/raw/master/package.json?inline=false -O package.json \
-    && wget -q https://gitlab.com/koha-community/Koha/-/raw/master/yarn.lock?inline=false -O yarn.lock \
+    && wget -q https://gitlab.com/koha-community/Koha/-/raw/main/package.json?inline=false -O package.json \
+    && wget -q https://gitlab.com/koha-community/Koha/-/raw/main/yarn.lock?inline=false -O yarn.lock \
     && yarn install --modules-folder /kohadevbox/node_modules \
     && mv /root/.cache/Cypress /kohadevbox && chown -R 1000 /kohadevbox/Cypress \
     && rm -f package.json yarn.lock
@@ -181,13 +181,13 @@ RUN apt-get update \
 
 # Remote debugger
 RUN cd /kohadevbox \
-    && wget -q -O dbgp.tar.gz https://gitlab.com/mjames/dbgp/-/raw/master/dbgp.tar.gz \
+    && wget -q -O dbgp.tar.gz https://gitlab.com/mjames/dbgp/-/raw/main/dbgp.tar.gz \
     && tar xvzf dbgp.tar.gz \
     && rm dbgp.tar.gz
 
 # download koha-reload-starman
 RUN cd /kohadevbox \
-    && wget https://gitlab.com/mjames/koha-reload-starman/-/raw/master/koha-reload-starman \
+    && wget https://gitlab.com/mjames/koha-reload-starman/-/raw/main/koha-reload-starman \
     && chmod 755 koha-reload-starman \
     && apt-get update \
     && apt-get -y install inotify-tools \
