@@ -192,7 +192,7 @@ if [[ ${SKIP_L10N} != "yes" ]]; then
 
     echo "[koha-l10n] Handling koha-l10n as requested"
     echo "    [*] Chowing po files (safety measure)"
-    chown -R "${KOHA_INSTANCE}-koha:${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
+    chown -R "${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
 
     if [ ! -d "$BUILD_DIR/koha/misc/translator/po" ]; then
         echo "    [*] Cloning koha-l10n into misc/translator/po"
