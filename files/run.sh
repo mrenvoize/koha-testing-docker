@@ -191,14 +191,14 @@ if [[ ${SKIP_L10N} != "yes" ]]; then
     set +e
 
     echo "[koha-l10n] Handling koha-l10n as requested"
-    echo "    [*] Chowing po files (safety measure)"
-    chown -R "${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
 
     if [ ! -d "$BUILD_DIR/koha/misc/translator/po" ]; then
         echo "    [*] Cloning koha-l10n into misc/translator/po"
         sudo koha-shell ${KOHA_INSTANCE} -c "\
             git clone --branch ${l10n_branch} https://gitlab.com/koha-community/koha-l10n.git $BUILD_DIR/koha/misc/translator/po"
     elif [ -d "$BUILD_DIR/koha/misc/translator/po/.git" ]; then
+        echo "    [*] Chowing po files (safety measure)"
+        chown -R "${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
         echo "    [*] Fetching koha-l10n"
         sudo koha-shell ${KOHA_INSTANCE} -c "\
             git config --global --add safe.directory $BUILD_DIR/koha/misc/translator/po ; \
@@ -218,14 +218,14 @@ sed -i 's/log4perl.logger.api = WARN, API/log4perl.logger.api = TRACE, API/' /et
 
 echo "[git] Setting up Git on the instance user"
 sudo koha-shell ${KOHA_INSTANCE} -c "\
-    echo \"[git]    [*] Generating /var/lib/koha/${KOHA_INSTANCE}/.gitconfig\" ; \
+    echo \"    [*] Generating /var/lib/koha/${KOHA_INSTANCE}/.gitconfig\" ; \
     cp ${BUILD_DIR}/templates/gitconfig /var/lib/koha/${KOHA_INSTANCE}/.gitconfig ; \
-    echo \"[git]    [*] Installing and setting hooks\" ; \
+    echo \"    [*] Installing and setting hooks\" ; \
     mkdir -p ${BUILD_DIR}/koha/.git/hooks/ktd ; \
     cp ${BUILD_DIR}/git_hooks/* ${BUILD_DIR}/koha/.git/hooks/ktd ; \
     cd ${BUILD_DIR}/koha ; \
     git config --local core.hooksPath .git/hooks/ktd ; \
-    echo \"[git]    [*] General setup\" ; \
+    echo \"    [*] General setup\" ; \
     git config --global --add safe.directory ${BUILD_DIR}/koha ; \
     git config --global user.name  \"${GIT_USER_NAME}\" ; \
     git config --global user.email \"${GIT_USER_EMAIL}\" ; \
@@ -248,6 +248,10 @@ cd ${BUILD_DIR}
 
 koha-enable ${KOHA_INSTANCE} 
 a2ensite ${KOHA_INSTANCE}.conf
+
+cp /kohadevbox/koha/package.json /kohadevbox
+cp /kohadevbox/koha/yarn.lock    /kohadevbox
+yarn install --modules-folder /kohadevbox/node_modules
 
 # Update /etc/hosts so the www tests can run
 echo "127.0.0.1    ${KOHA_OPAC_FQDN} ${KOHA_INTRANET_FQDN}" >> /etc/hosts
