@@ -198,8 +198,7 @@ RUN cd /kohadevbox \
 # Install temporary packages
 RUN apt-get update \
    && apt-get -y install \
-       libmojolicious-plugin-oauth2-perl \
-       libmojolicious-plugin-renderfile-perl \
+       libalgorithm-munkres-perl \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 
