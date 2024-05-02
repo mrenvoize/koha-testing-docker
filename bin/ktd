@@ -50,6 +50,7 @@ Options:
     --sso                 Use a Keycloak container
     --shell               Get into the Koha container
     --dbshell             Get into the database
+    --run 'command'       Execute a command inside the shell (requires --shell)
     --logs                Follow the koha container logs
     --help|-h             Display this help message
 
@@ -158,6 +159,7 @@ KOHA_ELASTICSEARCH="no"
 DOCKER_PROJECT="koha"
 
 ROOT_ACCESS="no"
+RUN=""
 SHELL_ACCESS="no"
 DBSHELL_ACCESS="no"
 
@@ -202,6 +204,9 @@ while [ $# -gt 0 ]; do
         --root)
             ROOT_ACCESS="yes"
             shift ;;
+        --run)
+            RUN=$2
+            shift 2 ;;
         --shell)
             SHELL_ACCESS="yes"
             shift ;;
@@ -225,7 +230,9 @@ if [ "$SHELL_ACCESS" != "no" ]; then
     if [ "$ROOT_ACCESS" != "no" ]; then
         docker exec -it koha-koha-1 bash
     elif [ "$DBSHELL_ACCESS" != "no" ]; then
-	docker exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
+        docker exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
+    elif [ "$RUN" != "" ]; then
+        docker exec -it koha-koha-1 bash -c "${RUN}"
     else
         docker exec --user kohadev-koha --workdir /kohadevbox/koha -ti koha-koha-1 bash
     fi
