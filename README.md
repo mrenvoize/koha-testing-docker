@@ -110,6 +110,12 @@ ktd --shell
 ktd --root --shell
 ```
 
+* Run a command inside the container
+
+```shell
+ktd --shell --run 'echo hola'
+```
+
 * Get into a DB (mysql) shell
 
 ```shell
