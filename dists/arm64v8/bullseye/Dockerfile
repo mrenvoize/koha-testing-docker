@@ -204,6 +204,7 @@ RUN cd /kohadevbox \
 RUN apt-get update \
    && apt-get -y install \
        libalgorithm-munkres-perl \
+       libstruct-diff-perl \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 
