@@ -70,7 +70,11 @@ echo 'export PATH=$PATH:$KTD_HOME/bin' >> ~/.bashrc
 echo 'export LOCAL_USER_ID=$(id -u)' >> ~/.bashrc
 ```
 
-**Note:** you will need to log out and log back in (or start a new terminal window) for this to take effect.
+For this to take effect on your current terminal, run:
+
+```shell
+source ~/.bashrc
+```
 
 * Generate your personal _.env_ file:
 
