@@ -1,4 +1,4 @@
-FROM arm64v8/debian:bookworm
+FROM ubuntu:24.04
 
 # File Author / Maintainer
 LABEL maintainer="tomascohen@theke.io"
@@ -65,7 +65,10 @@ RUN a2enmod rewrite \
 
 # Add Koha development repositories
 RUN echo "deb http://debian.koha-community.org/koha-staging dev main" >> /etc/apt/sources.list.d/koha.list
-RUN wget -q -O- http://debian.koha-community.org/koha/gpg.asc | apt-key add -
+RUN curl -s http://debian.koha-community.org/koha/gpg.asc  | \
+        gpg --no-default-keyring \
+         --keyring gnupg-ring:/etc/apt/trusted.gpg.d/koha.gpg --import \
+    && chmod 644 /etc/apt/trusted.gpg.d/koha.gpg
 
 # Install koha-common
 RUN apt-get -y update \
@@ -98,7 +101,6 @@ RUN apt-get -y update \
          libdevel-cover-report-clover-perl \
          libwebservice-ils-perl \
          libselenium-remote-driver-perl \
-         inotify-tools \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 
@@ -148,6 +150,7 @@ RUN cd /kohadevbox \
 # release-tools and koha-howto
 RUN cd /kohadevbox \
     && git clone https://gitlab.com/koha-community/release-tools.git \
+    && git clone https://gitlab.com/koha-community/koha-howto.git howto \
     && apt-get update \
     && apt-get -y install \
         libhtml-tableextract-perl \
@@ -180,6 +183,15 @@ RUN cd /kohadevbox \
     && wget -q -O dbgp.tar.gz https://gitlab.com/mjames/dbgp/-/raw/master/dbgp.tar.gz \
     && tar xvzf dbgp.tar.gz \
     && rm dbgp.tar.gz
+
+# download koha-reload-starman
+RUN cd /kohadevbox \
+    && wget https://gitlab.com/mjames/koha-reload-starman/-/raw/master/koha-reload-starman \
+    && chmod 755 koha-reload-starman \
+    && apt-get update \
+    && apt-get -y install inotify-tools \
+    && rm -rf /var/cache/apt/archives/* \
+    && rm -rf /var/lib/api/lists/*
 
 # Install temporary packages
 # RUN apt-get update \

@@ -1,4 +1,4 @@
-FROM arm64v8/debian:bookworm
+FROM arm64v8/ubuntu:24.04
 
 # File Author / Maintainer
 LABEL maintainer="tomascohen@theke.io"
@@ -31,8 +31,8 @@ RUN apt-get -y update \
       libdata-printer-perl \
       pmtools \
       locales \
-      netcat-openbsd \
-      python3-gdbm \
+      netcat \
+      python-gdbm \
       vim \
       tmux \
       wget \
@@ -177,7 +177,7 @@ RUN apt-get update \
 
 # Remote debugger
 RUN cd /kohadevbox \
-    && wget -q -O dbgp.tar.gz https://gitlab.com/mjames/dbgp/-/raw/master/dbgp.tar.gz \
+    && wget -q -O dbgp.tar.gz https://gitlab.com/koha-community/dbgp/-/raw/master/dbgp.tar.gz \
     && tar xvzf dbgp.tar.gz \
     && rm dbgp.tar.gz
 

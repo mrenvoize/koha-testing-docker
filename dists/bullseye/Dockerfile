@@ -63,7 +63,6 @@ RUN a2enmod rewrite \
             proxy_http \
             cgi
 
-
 # Add Koha development repositories
 RUN echo "deb http://debian.koha-community.org/koha-staging dev main" >> /etc/apt/sources.list.d/koha.list
 RUN wget -q -O- http://debian.koha-community.org/koha/gpg.asc | apt-key add -
@@ -92,7 +91,6 @@ RUN apt-get -y update \
          libexpat1-dev \
          libtemplate-plugin-gettext-perl \
          libdevel-cover-perl \
-\
          libmoosex-attribute-env-perl \
          libtest-dbix-class-perl \
          libtap-harness-junit-perl \
