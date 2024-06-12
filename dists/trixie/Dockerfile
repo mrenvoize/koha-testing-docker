@@ -70,24 +70,19 @@ RUN a2enmod rewrite \
             cgi
 
 # Add Koha development repositories
+RUN echo "deb http://debian.koha-community.org/koha-staging dev main" >> /etc/apt/sources.list.d/koha.list
 RUN curl -s http://debian.koha-community.org/koha/gpg.asc  | \
         gpg --no-default-keyring \
          --keyring gnupg-ring:/etc/apt/trusted.gpg.d/koha.gpg --import \
     && chmod 644 /etc/apt/trusted.gpg.d/koha.gpg
 
-#RUN echo "deb http://debian.koha-community.org/koha-staging exp main" >> /etc/apt/sources.list.d/koha.list
-RUN echo "deb http://debian.koha-community.org/koha-staging exp main" >> /etc/apt/sources.list.d/koha.list
-
-RUN apt-get -y update
-
-RUN apt-cache policy koha-common
-RUN apt-cache policy libmojolicious-perl
-RUN apt-cache policy libjson-validator-perl
-RUN apt-cache policy libmojolicious-plugin-openapi-perl
-RUN apt-cache policy libyaml-libyaml-perl
-
 # Install koha-common
 RUN apt-get -y update \
+   && apt-cache policy koha-common \
+   && apt-cache policy libmojolicious-perl \
+   && apt-cache policy libjson-validator-perl \
+   && apt-cache policy libmojolicious-plugin-openapi-perl \
+   && apt-cache policy libyaml-libyaml-perl \
    && apt-get -y install \
          koha-common \
    && /etc/init.d/koha-common stop \
@@ -138,6 +133,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.lis
 
 # Install Node.js and Yarn
 RUN apt-get update \
+   && apt-cache policy nodejs \
+   && apt-cache policy yarn \
    && apt-get -y install nodejs yarn \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
@@ -210,12 +207,11 @@ RUN cd /kohadevbox \
     && rm -rf /var/lib/api/lists/*
 
 # Install temporary packages
-RUN apt-get update \
-   && apt-get -y install \
-       libalgorithm-munkres-perl \
-       libstruct-diff-perl \
-   && rm -rf /var/cache/apt/archives/* \
-   && rm -rf /var/lib/api/lists/*
+# RUN apt-get update \
+#    && apt-get -y install \
+#        <PACKAGES HERE>
+#    && rm -rf /var/cache/apt/archives/* \
+#    && rm -rf /var/lib/api/lists/*
 
 VOLUME /kohadevbox/koha
 
