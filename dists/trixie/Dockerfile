@@ -131,6 +131,11 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.lis
       | tee /usr/share/keyrings/yarnkey.gpg >/dev/null \
    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian stable main" | tee /etc/apt/sources.list.d/yarn.list
 
+# Pin nodejs version on trixie
+RUN echo "Package: nodejs" >  /etc/apt/preferences.d/nodejs
+RUN echo "Pin: version 18.*"    >> /etc/apt/preferences.d/nodejs
+RUN echo "Pin-Priority: 999"    >> /etc/apt/preferences.d/nodejs
+
 # Install Node.js and Yarn
 RUN apt-get update \
    && apt-cache policy nodejs \
