@@ -1,4 +1,3 @@
-# Base it on Debian 10
 FROM arm64v8/debian:bookworm
 
 # File Author / Maintainer
@@ -7,7 +6,7 @@ LABEL maintainer="tomascohen@theke.io"
 ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV REFRESHED_AT 2024-05-09
+ENV REFRESHED_AT 2024-06-12
 
 # Install apache2 and testting deps
 # netcat: used for checking the DB is up

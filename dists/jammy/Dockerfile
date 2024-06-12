@@ -1,4 +1,3 @@
-# Base it on Ubuntu jammy
 FROM ubuntu:22.04
 
 # File Author / Maintainer

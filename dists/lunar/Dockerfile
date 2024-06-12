@@ -1,4 +1,3 @@
-# Base it on Ubuntu lunar
 FROM ubuntu:23.04
 
 # File Author / Maintainer
@@ -7,7 +6,7 @@ LABEL maintainer="tomascohen@theke.io"
 ENV PATH /usr/bin:/bin:/usr/sbin:/sbin
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV REFRESHED_AT 2023-05-12
+ENV REFRESHED_AT 2024-06-12
 
 # Install apache2 and testting deps
 # netcat: used for checking the DB is up
@@ -99,17 +98,6 @@ RUN apt-get -y update \
          libdevel-cover-report-clover-perl \
          libwebservice-ils-perl \
          libselenium-remote-driver-perl \
-   && rm -rf /var/cache/apt/archives/* \
-   && rm -rf /var/lib/api/lists/*
-
-RUN cpanm -i --force --mirror http://cpan.cpantesters.org/ \
-       HTTPD::Bench::ApacheBench \
-    && rm -r /root/.cpanm
-
-# Install temporary package
-RUN apt-get -y update \
-   && apt-get -y install \
-         libemail-address-perl \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 

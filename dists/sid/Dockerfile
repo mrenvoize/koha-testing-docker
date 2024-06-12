@@ -1,4 +1,3 @@
-# Base it on Debian 11
 FROM debian:sid
 
 # File Author / Maintainer
@@ -11,8 +10,6 @@ ENV DEBIAN_FRONTEND noninteractive
 #RUN echo "deb http://httpredir.debian.org/debian bullseye main" > /etc/apt/sources.list
 
 ENV REFRESHED_AT 2021-08-04
-
-#RUN apt-get -y update
 
 # Install apache2 and testting deps
 # netcat: used for checking the DB is up
@@ -108,13 +105,6 @@ RUN apt-get -y update \
          libdevel-cover-report-clover-perl \
          libwebservice-ils-perl \
          libselenium-remote-driver-perl \
-   && rm -rf /var/cache/apt/archives/* \
-   && rm -rf /var/lib/api/lists/*
-
-# Install temporary package
-RUN apt-get -y update \
-   && apt-get -y install \
-         libemail-address-perl \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 
