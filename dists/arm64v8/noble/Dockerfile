@@ -161,16 +161,15 @@ RUN cd /kohadevbox \
 # cypress tests
 RUN apt-get update \
     && apt-get -y install \
-        libgtk2.0-0\
-        libgtk-3-0\
-        libgbm-dev\
-        libnotify-dev\
-        libgconf-2-4\
-        libnss3\
-        libxss1\
-        libasound2\
-        libxtst6\
-        xauth\
+        libgtk2.0-0t64 \
+        libgtk-3-0t64 \
+        libgbm-dev \
+        libnotify-dev \
+        libnss3 \
+        libxss1 \
+        libasound2t64 \
+        libxtst6 \
+        xauth \
         xvfb \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
