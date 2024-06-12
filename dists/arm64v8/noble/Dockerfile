@@ -31,14 +31,14 @@ RUN apt-get -y update \
       libdata-printer-perl \
       pmtools \
       locales \
-      netcat \
-      python-gdbm \
+      netcat-openbsd \
+      python3-gdbm \
       vim \
       tmux \
       wget \
       curl \
       apt-transport-https \
-      mlocate \
+      plocate \
       iproute2 \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/apt/lists/*
