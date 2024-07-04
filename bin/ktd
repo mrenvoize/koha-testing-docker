@@ -145,6 +145,8 @@ source $KTD_HOME/.env
 
 set_arch
 
+WAIT_READY="no"
+
 ENABLED_SEARCHENGINE=""
 
 ENABLE_PLUGINS="no"
@@ -211,6 +213,10 @@ while [ $# -gt 0 ]; do
             SHELL_ACCESS="yes"
             DBSHELL_ACCESS="yes"
             shift ;;
+        --wait-ready)
+            WAIT_READY="yes"
+            WAIT_TIMEOUT=$2
+            break ;;
         -*)
             printf "\nError: expected a docker compose action and got '$1' instead\n\n"
             usage
@@ -221,6 +227,35 @@ while [ $# -gt 0 ]; do
     esac
 
 done
+
+if [ "${KTD_PROJECT}" != "" ]; then
+    DOCKER_PROJECT=${KTD_PROJECT}
+fi
+
+if [ "$WAIT_READY" != "no" ]; then
+    if [ -x ${WAIT_TIMEOUT} ]; then
+        WAIT_TIMEOUT=100
+    fi
+
+    regex='^[0-9]+$'
+    if ! [[ $WAIT_TIMEOUT =~ $regex ]] ; then
+        printf "ERROR: timeout must be a number (got $WAIT_TIMEOUT)\n"
+        exit 1
+    fi
+
+    for i in $(seq 1 $WAIT_TIMEOUT); do
+        if docker exec ${DOCKER_PROJECT}-koha-1 bash -c '[ -e /ktd_ready ]'; then
+            printf "\n"
+            exit 0
+        else
+            printf "\rAttempt $i of $WAIT_TIMEOUT"
+            sleep 1
+        fi
+    done
+
+    printf "\nERROR: no more attempts\n"
+    exit 1
+fi
 
 if [ "$SHELL_ACCESS" != "no" ]; then
 
@@ -267,10 +302,6 @@ else
 
             if [ "$ENABLE_SSO" != "no" ]; then
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.sso.yml"
-            fi
-
-            if [ "${KTD_PROJECT}" != "" ]; then
-                DOCKER_PROJECT=${KTD_PROJECT}
             fi
 
             export KOHA_ELASTICSEARCH="${KOHA_ELASTICSEARCH}"
