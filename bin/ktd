@@ -65,6 +65,16 @@ Note: --es6, --es7, --es8, --os1 and --os2 are mutually exclussive.
 EOF
 }
 
+
+set_docker()
+{
+    if [ -z "$DOCKER_BINARY" ]; then
+
+        export DOCKER_BINARY="$(which docker)"
+
+    fi
+}
+
 set_searchengine()
 {
     if [ "$ENABLED_SEARCHENGINE" == "" ]; then
@@ -144,6 +154,7 @@ source $KTD_HOME/.env
 [ "$ENV_ES_IMAGE"   != "" ] &&   ES_IMAGE=$ENV_ES_IMAGE
 [ "$ENV_KOHA_IMAGE" != "" ] && KOHA_IMAGE=$ENV_KOHA_IMAGE
 
+set_docker
 set_arch
 
 WAIT_READY="no"
@@ -261,17 +272,17 @@ fi
 if [ "$SHELL_ACCESS" != "no" ]; then
 
     if [ "$ROOT_ACCESS" != "no" ]; then
-        docker exec -it koha-koha-1 bash
+        "$DOCKER_BINARY" exec -it koha-koha-1 bash
     elif [ "$DBSHELL_ACCESS" != "no" ]; then
-        docker exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
+        "$DOCKER_BINARY" exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
     elif [ "$RUN" != "" ]; then
-        docker exec -it koha-koha-1 bash -c "${RUN}"
+        "$DOCKER_BINARY" exec -it koha-koha-1 bash -c "${RUN}"
     else
-        docker exec --user kohadev-koha --workdir /kohadevbox/koha -ti koha-koha-1 bash
+        "$DOCKER_BINARY" exec --user kohadev-koha --workdir /kohadevbox/koha -ti koha-koha-1 bash
     fi
 elif [ "$FOLLOW_LOGS" != "no" ]; then
 
-    docker logs -f koha-koha-1
+    "$DOCKER_BINARY" logs -f koha-koha-1
 else
     # run the KTD command
     if [ -n "$KTD_HOME" ]; then
@@ -310,9 +321,9 @@ else
             COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -p ${DOCKER_PROJECT}"
 
             if [ "$1" = "down" ]; then
-                docker compose -p ${DOCKER_PROJECT} down
+                "$DOCKER_BINARY" compose -p ${DOCKER_PROJECT} down
             else
-                docker compose ${COMPOSE_OPTIONS} $@
+                "$DOCKER_BINARY" compose ${COMPOSE_OPTIONS} $@
             fi
 
             # back to the original working directory
