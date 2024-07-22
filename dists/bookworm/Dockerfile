@@ -127,7 +127,7 @@ RUN apt-get update \
    && rm -rf /var/lib/api/lists/*
 
 # Install some tool
-RUN yarn global add gulp-cli swagger-cli
+RUN yarn global add gulp-cli
 
 # Embed /kohadevbox/node_modules
 RUN cd /kohadevbox \
