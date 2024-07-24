@@ -51,6 +51,7 @@ Options:
     --shell               Get into the Koha container
     --dbshell             Get into the database
     --run 'command'       Execute a command inside the shell (requires --shell)
+    --wait-ready N        Wait N secs until KTD is up and running
     --logs                Follow the koha container logs
     --help|-h             Display this help message
 

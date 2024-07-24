@@ -144,6 +144,12 @@ ktd pull
 ktd down
 ```
 
+* Waiting for startup completion
+
+```shell
+ktd --wait-ready 100 && echo "YAY" || echo "BOO"
+```
+
 * Adding services to our stack
 
 Several option switches are provided for more fine-grained control:
