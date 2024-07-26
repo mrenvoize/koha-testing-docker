@@ -1,0 +1,154 @@
+#!/bin/bash
+
+# ktd_proxy - koha-testing-docker management script
+#
+#              Copyright 2024 ByWater Solutions
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+set -e
+
+usage()
+{
+    local scriptname=$0
+
+    cat <<EOF
+
+This script lets you manage a local Traefik proxy suited for KTD.
+
+Usage:
+
+    ktd_proxy -h|--help
+
+Options:
+
+    --start               Starts the proxy
+    --stop                Yeah
+    --status              Prints the proxy status
+    --help|-h             Display this help message
+
+EOF
+}
+
+set_docker()
+{
+    if [ -z "$DOCKER_BINARY" ]; then
+
+        export DOCKER_BINARY="$(which docker)"
+
+    fi
+}
+
+is_network_present()
+{
+    if ${DOCKER_BINARY} network ls | grep -q -e '\sproxy\s'  ; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+is_container_running()
+{
+    if ${DOCKER_BINARY} ps | grep -q -e '\sproxy-proxy-1'  ; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+print_status()
+{
+    if is_network_present; then
+        printf "Network (proxy): present\n"
+    else
+        printf "Network (proxy): absent\n"
+    fi
+
+    if is_container_running; then
+        printf "Container: running\n"
+    else
+        printf "Container: not running\n"
+    fi
+}
+
+set_docker
+
+OP=""
+
+# Read command line parameters
+while [ $# -gt 0 ]; do
+
+    case "$1" in
+        -h|--help)
+            usage ; exit 0 ;;
+        --start)
+            OP="start"
+            break ;;
+        --status)
+            OP="status"
+            break ;;
+        --stop)
+            OP="stop"
+            break ;;
+        -*)
+            printf "\nError: invalid parameter passed '$1'\n\n"
+            usage
+            exit 1 ;;
+        *)
+            # We expect the remaining stuff are the instance names
+            break ;;
+    esac
+
+done
+
+if [ "${OP}" = "" ]; then
+    printf "\nError: no action requested\n\n"
+    usage
+    exit 1
+fi
+
+if [ -n "$KTD_HOME" ]; then
+
+    if [ -d "$KTD_HOME" ]; then
+
+        # save current working directory
+        current_dir=$(pwd)
+        cd "${KTD_HOME}"
+
+        if [ "${OP}" = "start" ]; then
+            if ! is_network_present; then
+                ${DOCKER_BINARY} network create proxy
+            fi
+            "$DOCKER_BINARY" compose -p proxy -f proxy/proxy.yml up -d
+        elif [ "${OP}" = "stop" ]; then
+            "$DOCKER_BINARY" compose -p proxy down
+        elif [ "${OP}" = "status" ]; then
+            print_status
+        fi
+
+        # back to the original working directory
+        cd "${current_dir}"
+    else
+        printf "\nThe mandatory \$KTD_HOME variable points to an invalid directory.\nIt needs to point to a KTD clone directory.\n\n"
+        usage
+        exit 1
+    fi
+else
+    printf "\nThe mandatory \$KTD_HOME variable is not defined. It needs to point to a KTD clone directory.\n\n"
+    usage
+    exit 1
+fi
+
+exit 0

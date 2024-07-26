@@ -1,0 +1,28 @@
+services:
+  proxy:
+    image: traefik:v3.1
+    restart: always
+    command:
+      - "--api.insecure=true" # Enable the Traefik dashboard without authentication
+      - "--api.dashboard=true"
+      - "--entrypoints.web.address=:80"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=proxy"
+      - "--accesslog=true"
+      - "--log=true"
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`proxy.localhost`)"
+      - "traefik.http.routers.api.service=api@internal"
+      - "traefik.http.routers.api.entrypoints=web"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
