@@ -52,6 +52,8 @@ Options:
     --dbshell             Get into the database
     --run 'command'       Execute a command inside the shell (requires --shell)
     --wait-ready N        Wait N secs until KTD is up and running
+    --proxy               Use the proxied version of the compose file
+    --name                Sets the project name
     --logs                Follow the koha container logs
     --help|-h             Display this help message
 
@@ -167,7 +169,7 @@ ENABLE_SSO="no"
 
 KOHA_ELASTICSEARCH="no"
 
-DOCKER_PROJECT="koha"
+PROJECT_NAME="kohadev"
 
 ROOT_ACCESS="no"
 RUN=""
@@ -175,6 +177,8 @@ SHELL_ACCESS="no"
 DBSHELL_ACCESS="no"
 
 FOLLOW_LOGS="no"
+
+USE_PROXY="no"
 
 # Read command line parameters
 while [ $# -gt 0 ]; do
@@ -206,6 +210,12 @@ while [ $# -gt 0 ]; do
         --plugins)
             ENABLE_PLUGINS="yes"
             shift ;;
+        --proxy)
+            USE_PROXY="yes"
+            shift ;;
+        --name)
+            PROJECT_NAME=$2
+            shift 2 ;;
         --selenium)
             ENABLE_SELENIUM="yes"
             shift ;;
@@ -240,9 +250,7 @@ while [ $# -gt 0 ]; do
 
 done
 
-if [ "${KTD_PROJECT}" != "" ]; then
-    DOCKER_PROJECT=${KTD_PROJECT}
-fi
+export KOHA_INSTANCE=${PROJECT_NAME}
 
 if [ "$WAIT_READY" != "no" ]; then
     if [ -x ${WAIT_TIMEOUT} ]; then
@@ -256,7 +264,7 @@ if [ "$WAIT_READY" != "no" ]; then
     fi
 
     for i in $(seq 1 $WAIT_TIMEOUT); do
-        if docker exec ${DOCKER_PROJECT}-koha-1 bash -c '[ -e /ktd_ready ]'; then
+        if docker exec ${PROJECT_NAME}-koha-1 bash -c '[ -e /ktd_ready ]'; then
             printf "\n"
             exit 0
         else
@@ -272,17 +280,17 @@ fi
 if [ "$SHELL_ACCESS" != "no" ]; then
 
     if [ "$ROOT_ACCESS" != "no" ]; then
-        "$DOCKER_BINARY" exec -it koha-koha-1 bash
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-koha-1 bash
     elif [ "$DBSHELL_ACCESS" != "no" ]; then
-        "$DOCKER_BINARY" exec -it koha-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
     elif [ "$RUN" != "" ]; then
-        "$DOCKER_BINARY" exec -it koha-koha-1 bash -c "${RUN}"
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-koha-1 bash -c "${RUN}"
     else
-        "$DOCKER_BINARY" exec --user kohadev-koha --workdir /kohadevbox/koha -ti koha-koha-1 bash
+        "$DOCKER_BINARY" exec --user ${PROJECT_NAME}-koha --workdir /kohadevbox/koha -ti ${PROJECT_NAME}-koha-1 bash
     fi
 elif [ "$FOLLOW_LOGS" != "no" ]; then
 
-    "$DOCKER_BINARY" logs -f koha-koha-1
+    "$DOCKER_BINARY" logs -f ${PROJECT_NAME}-koha-1
 else
     # run the KTD command
     if [ -n "$KTD_HOME" ]; then
@@ -297,7 +305,11 @@ else
             current_dir=$(pwd)
             cd "${KTD_HOME}"
 
-            COMPOSE_OPTIONS='-f docker-compose-light.yml'
+            if [ "${USE_PROXY}" != "yes" ]; then
+                COMPOSE_OPTIONS='-f docker-compose-light.yml'
+            else
+                COMPOSE_OPTIONS='-f docker-compose-proxy.yml'
+            fi
 
             if [ "$ENABLED_SEARCHENGINE" != "" ]; then
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.${ES_IMAGE_TYPE}.yml"
@@ -318,10 +330,10 @@ else
 
             export KOHA_ELASTICSEARCH="${KOHA_ELASTICSEARCH}"
 
-            COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -p ${DOCKER_PROJECT}"
+            COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -p ${PROJECT_NAME}"
 
             if [ "$1" = "down" ]; then
-                "$DOCKER_BINARY" compose -p ${DOCKER_PROJECT} down
+                "$DOCKER_BINARY" compose -p ${PROJECT_NAME} down
             else
                 "$DOCKER_BINARY" compose ${COMPOSE_OPTIONS} $@
             fi
