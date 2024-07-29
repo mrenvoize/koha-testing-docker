@@ -1,4 +1,3 @@
-version: '3'
 services:
     db:
         image: ${DB_IMAGE:-mariadb:10.5}
@@ -42,6 +41,9 @@ services:
                 hard: 65536
         networks:
             proxy:
+                aliases:
+                    - "${KOHA_INTRANET_PREFIX}${KOHA_INSTANCE}${KOHA_INTRANET_SUFFIX}${KOHA_DOMAIN}"
+                    - "${KOHA_OPAC_PREFIX}${KOHA_INSTANCE}${KOHA_OPAC_SUFFIX}${KOHA_DOMAIN}"
             kohanet:
                 aliases:
                     - "${KOHA_INTRANET_PREFIX}${KOHA_INSTANCE}${KOHA_INTRANET_SUFFIX}${KOHA_DOMAIN}"
