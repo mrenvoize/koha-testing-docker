@@ -250,7 +250,9 @@ while [ $# -gt 0 ]; do
 
 done
 
-export KOHA_INSTANCE=${PROJECT_NAME}
+if [ "${KOHA_INSTANCE}" = "" ]; then
+    KOHA_INSTANCE=kohadev
+fi
 
 if [ "$WAIT_READY" != "no" ]; then
     if [ -x ${WAIT_TIMEOUT} ]; then
@@ -286,7 +288,7 @@ if [ "$SHELL_ACCESS" != "no" ]; then
     elif [ "$RUN" != "" ]; then
         "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-koha-1 bash -c "${RUN}"
     else
-        "$DOCKER_BINARY" exec --user ${PROJECT_NAME}-koha --workdir /kohadevbox/koha -ti ${PROJECT_NAME}-koha-1 bash
+        "$DOCKER_BINARY" exec --user ${KOHA_INSTANCE}-koha --workdir /kohadevbox/koha -ti ${PROJECT_NAME}-koha-1 bash
     fi
 elif [ "$FOLLOW_LOGS" != "no" ]; then
 
@@ -331,6 +333,8 @@ else
             export KOHA_ELASTICSEARCH="${KOHA_ELASTICSEARCH}"
 
             COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -p ${PROJECT_NAME}"
+
+            export KOHA_INSTANCE=${PROJECT_NAME}
 
             if [ "$1" = "down" ]; then
                 "$DOCKER_BINARY" compose -p ${PROJECT_NAME} down
