@@ -214,13 +214,21 @@ Another parameter has been added to the `ktd` script, `--name`. This will allow 
 namespace for a new `KTD` instance. For example:
 
 ```shell
-ktd --name kohadev2 up -d
+ktd --proxy --name kohadev2 up -d
 ```
 
 Conveniently, this instance will be accessed by using the following URLs:
 
 * OPAC: http://kohadev2.localhost
 * Staff interface: http://kohadev2-intra.localhost
+
+All usual `ktd` options are still available, but you need to make sure you specify the `--name` parameter
+correctly. For example:
+
+```shell
+ktd --name kohadev2 --logs
+ktd --name kohadev2 --shell
+```
 
 ### Flexibility
 
@@ -232,8 +240,8 @@ This implies you could launch another codebase, Docker image, DB engine, and so 
 Examples:
 
 ```shell
-SYNC_REPO=/path/to/23.11/code ktd --name 2311 up -d
-DB_IMAGE=mysql:8.0 ktd --name mysql8 up -d
+SYNC_REPO=/path/to/23.11/code ktd --proxy --name 2311 up -d
+DB_IMAGE=mysql:8.0 ktd --proxy --name mysql8 up -d
 ```
 
 We highly recommend the use of [git worktrees](https://git-scm.com/docs/git-worktree) for having different
