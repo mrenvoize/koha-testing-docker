@@ -173,6 +173,72 @@ For a complete list of the option switches, run the command with the _--help_ op
 ktd --help
 ```
 
+## Proxied `KTD`
+
+`KTD` ships a configuration for launchinig a local proxy which has two benefits:
+
+* Allows running all services on port 80
+* Allows running several `KTD` instances in parllel
+
+### Start the proxy
+
+Before launching `ktd` in proxied mode, you need to start the proxy itself. We include
+a `ktd_proxy` command for convenience:
+
+```shell
+ktd_proxy --start
+ktd_proxy --status
+ktd_proxy --stop
+```
+
+The proxy status dashboard can be accessed by pointing you browser to [http://proxy.localhost](http://proxy.localhost).
+
+### Start proxied `KTD`
+
+If `KTD` is going to run behind the shipped proxy, you will need to add the `--proxy` flag
+on your usual command. For example:
+
+```shell
+ktd --proxy --es7 --plugins up -d
+```
+
+The default `KTD` instance name is **kohadev** to match the previous behavior. As such, you will be able
+to access this instance using the following URLs:
+
+* OPAC: http://kohadev.localhost
+* Staff interface: http://kohadev-intra.localhost
+
+### Running another instance in parallel
+
+Another parameter has been added to the `ktd` script, `--name`. This will allow us to specify a different
+namespace for a new `KTD` instance. For example:
+
+```shell
+ktd --name kohadev2 up -d
+```
+
+Conveniently, this instance will be accessed by using the following URLs:
+
+* OPAC: http://kohadev2.localhost
+* Staff interface: http://kohadev2-intra.localhost
+
+### Flexibility
+
+On the previous example, we launched a new `KTD` by using a different name. But you should note that any
+parameters that are available for launching `KTD` can be passed to this new instance.
+
+This implies you could launch another codebase, Docker image, DB engine, and so on.
+
+Examples:
+
+```shell
+SYNC_REPO=/path/to/23.11/code ktd --name 2311 up -d
+DB_IMAGE=mysql:8.0 ktd --name mysql8 up -d
+```
+
+We highly recommend the use of [git worktrees](https://git-scm.com/docs/git-worktree) for having different
+codebases on your hardrive without filling it up quickly.
+
 ## Getting to the web interface
 
 The IP address of the web server in your docker group will be variable. Once you are in with SSH, issuing a
