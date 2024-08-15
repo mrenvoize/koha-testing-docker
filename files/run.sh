@@ -197,7 +197,7 @@ if [[ ${SKIP_L10N} != "yes" ]]; then
         sudo koha-shell ${KOHA_INSTANCE} -c "\
             git clone --depth 1 --branch ${l10n_branch} https://gitlab.com/koha-community/koha-l10n.git $BUILD_DIR/koha/misc/translator/po"
     elif [ -d "$BUILD_DIR/koha/misc/translator/po/.git" ]; then
-        echo "    [*] Chowing po files (safety measure)"
+        echo "    [*] Chowning po files (safety measure)"
         chown -R "${KOHA_INSTANCE}-koha" "$BUILD_DIR/koha/misc/translator/po"
         echo "    [*] Fetching koha-l10n"
         sudo koha-shell ${KOHA_INSTANCE} -c "\

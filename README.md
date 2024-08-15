@@ -473,7 +473,7 @@ koha-koha-1       | error: Your local changes to the following files would be ov
 koha-koha-1       |     es-ES-staff-prog.po
 koha-koha-1       | Please commit your changes or stash them before you switch branches.
 koha-koha-1       | Aborting
-koha-koha-1       | Chowing po files
+koha-koha-1       | Chowning po files
 ```
 
 ## Problems?
