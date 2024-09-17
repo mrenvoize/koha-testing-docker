@@ -102,7 +102,7 @@ bullseye-arm64v8:
   variables:
     DOCKER_TLS_CERTDIR: ""
   tags:
-    - arm64
+    - saas-linux-medium-arm64
   script:
   - docker build -t koha/koha-testing:main-bullseye-arm64v8 --no-cache --rm -f dists/arm64v8/bullseye/Dockerfile .
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
@@ -132,7 +132,7 @@ focal-arm64v8:
   variables:
     DOCKER_TLS_CERTDIR: ""
   tags:
-    - arm64
+    - saas-linux-medium-arm64
   script:
   - docker build -t koha/koha-testing:main-focal-arm64v8 --no-cache --rm -f dists/arm64v8/focal/Dockerfile .
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
@@ -147,7 +147,7 @@ noble-arm64v8:
   variables:
     DOCKER_TLS_CERTDIR: ""
   tags:
-    - arm64
+    - saas-linux-medium-arm64
   script:
   - docker build -t koha/koha-testing:main-noble-arm64v8 --no-cache --rm -f dists/arm64v8/noble/Dockerfile .
   - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
