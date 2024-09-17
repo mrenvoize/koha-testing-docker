@@ -350,7 +350,7 @@ else
             fi
 
             if [ "$ENABLE_LOCAL_RUN_SCRIPT" != "no" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.localrun.yml"
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/localrun.yml"
             fi
 
             export KOHA_ELASTICSEARCH="${KOHA_ELASTICSEARCH}"
