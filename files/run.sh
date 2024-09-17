@@ -226,7 +226,8 @@ if [ -d "$BUILD_DIR/koha/.git" ]; then \
     sudo koha-shell ${KOHA_INSTANCE} -c "\
         mkdir -p ${BUILD_DIR}/koha/.git/hooks/ktd ; \
         cp ${BUILD_DIR}/git_hooks/* ${BUILD_DIR}/koha/.git/hooks/ktd ; \
-        git --git-dir=${BUILD_DIR}/koha config --local core.hooksPath .git/hooks/ktd ;"
+        cd ${BUILD_DIR}/koha ; \
+        git config --local core.hooksPath .git/hooks/ktd ;"
 
     echo "    [*] General setup"
     sudo koha-shell ${KOHA_INSTANCE} -c "\
