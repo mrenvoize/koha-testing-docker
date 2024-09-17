@@ -217,26 +217,35 @@ sed -i 's/log4perl.logger.api = WARN, API/log4perl.logger.api = TRACE, API/' /et
   || echo "    [x] Error setting TRACE for the API log4perl configuration"
 
 echo "[git] Setting up Git on the instance user"
+echo "    [*] Generating /var/lib/koha/${KOHA_INSTANCE}/.gitconfig"
 sudo koha-shell ${KOHA_INSTANCE} -c "\
-    echo \"    [*] Generating /var/lib/koha/${KOHA_INSTANCE}/.gitconfig\" ; \
-    cp ${BUILD_DIR}/templates/gitconfig /var/lib/koha/${KOHA_INSTANCE}/.gitconfig ; \
-    echo \"    [*] Installing and setting hooks\" ; \
-    mkdir -p ${BUILD_DIR}/koha/.git/hooks/ktd ; \
-    cp ${BUILD_DIR}/git_hooks/* ${BUILD_DIR}/koha/.git/hooks/ktd ; \
-    cd ${BUILD_DIR}/koha ; \
-    git config --local core.hooksPath .git/hooks/ktd ; \
-    echo \"    [*] General setup\" ; \
-    git config --global --add safe.directory ${BUILD_DIR}/koha ; \
-    git config --global user.name  \"${GIT_USER_NAME}\" ; \
-    git config --global user.email \"${GIT_USER_EMAIL}\" ; \
-    git config bz.default-tracker bugs.koha-community.org ; \
-    git config bz.default-product Koha ; \
-    git config --global bz-tracker.bugs.koha-community.org.path /bugzilla3 ; \
-    git config --global bz-tracker.bugs.koha-community.org.https true ; \
-    git config --global core.whitespace trailing-space,space-before-tab ; \
-    git config --global apply.whitespace fix ; \
-    git config --global bz-tracker.bugs.koha-community.org.bz-user     \"${GIT_BZ_USER}\" ; \
-    git config --global bz-tracker.bugs.koha-community.org.bz-password \"${GIT_BZ_PASSWORD}\" "
+    cp ${BUILD_DIR}/templates/gitconfig /var/lib/koha/${KOHA_INSTANCE}/.gitconfig"
+
+if [ -d "$BUILD_DIR/koha/.git" ]; then \
+    echo "    [*] Installing and setting hooks"
+    sudo koha-shell ${KOHA_INSTANCE} -c "\
+        mkdir -p ${BUILD_DIR}/koha/.git/hooks/ktd ; \
+        cp ${BUILD_DIR}/git_hooks/* ${BUILD_DIR}/koha/.git/hooks/ktd ; \
+        git --git-dir=${BUILD_DIR}/koha config --local core.hooksPath .git/hooks/ktd ;"
+
+    echo "    [*] General setup"
+    sudo koha-shell ${KOHA_INSTANCE} -c "\
+        cd ${BUILD_DIR}/koha ; \
+        git config --global --add safe.directory ${BUILD_DIR}/koha ; \
+        git config --global user.name  \"${GIT_USER_NAME}\" ; \
+        git config --global user.email \"${GIT_USER_EMAIL}\" ; \
+        git config bz.default-tracker bugs.koha-community.org ; \
+        git config bz.default-product Koha ; \
+        git config --global bz-tracker.bugs.koha-community.org.path /bugzilla3 ; \
+        git config --global bz-tracker.bugs.koha-community.org.https true ; \
+        git config --global core.whitespace trailing-space,space-before-tab ; \
+        git config --global apply.whitespace fix ; \
+        git config --global bz-tracker.bugs.koha-community.org.bz-user     \"${GIT_BZ_USER}\" ; \
+        git config --global bz-tracker.bugs.koha-community.org.bz-password \"${GIT_BZ_PASSWORD}\" "
+else
+    echo "    [!] .git is not a directory, worktree detected, skipping general git setup (and hooks)"
+fi
+
 
 # This needs to be done ONCE koha-create has run (i.e. kohadev-koha user exists)
 envsubst "$VARS_TO_SUB" < ${BUILD_DIR}/templates/apache2_envvars > /etc/apache2/envvars
