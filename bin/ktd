@@ -341,13 +341,16 @@ else
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.sso.yml"
             fi
 
-            # worktree?
-            if [ ! -d "${SYNC_REPO}/.git" ]; then
-                GIT_WORKTREE_SOURCE=$(cat ${SYNC_REPO}/.git | cut -d" " -f2)
-                export GIT_WORKTREE_SOURCE="${GIT_WORKTREE_SOURCE%%/.git/worktrees/*}"
-                printf "\nDetected Git worktree. Mounting ${GIT_WORKTREE_SOURCE}.\n\n"
+            # worktree? need to jump to the koha clone
+            cd ${SYNC_REPO}
+            if [ "$(git rev-parse --git-dir)" != ".git" ]; then
+                GIT_WORKTREE_SOURCE=$(git rev-parse --git-common-dir)
+                export GIT_WORKTREE_SOURCE="${GIT_WORKTREE_SOURCE%%/.git*}"
+                printf "\nDetected Git worktree. Mounting ${GIT_WORKTREE_SOURCE}\n\n"
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/worktree.yml"
             fi
+            # back to KTD clone
+            cd ${KTD_HOME}
 
             if [ "$ENABLE_LOCAL_RUN_SCRIPT" != "no" ]; then
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/localrun.yml"
