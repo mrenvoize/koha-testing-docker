@@ -86,19 +86,19 @@ set_searchengine()
 
         if [ "$ENABLED_SEARCHENGINE" = "os1" ]; then
             ES_IMAGE="koha/elasticsearch-icu:opensearch-1.x"
-            ES_IMAGE_TYPE="os"
+            ES_IMAGE_TYPE="opensearch"
         elif [ "$ENABLED_SEARCHENGINE" = "os2" ]; then
             ES_IMAGE="koha/elasticsearch-icu:opensearch-2.x"
-            ES_IMAGE_TYPE="os"
+            ES_IMAGE_TYPE="opensearch"
         elif [ "$ENABLED_SEARCHENGINE" = "es6" ]; then
             ES_IMAGE="koha/elasticsearch-icu:6.x"
-            ES_IMAGE_TYPE="es"
+            ES_IMAGE_TYPE="elastic"
         elif [ "$ENABLED_SEARCHENGINE" = "es7" ]; then
             ES_IMAGE="koha/elasticsearch-icu:7.x"
-            ES_IMAGE_TYPE="es"
+            ES_IMAGE_TYPE="elastic"
         elif [ "$ENABLED_SEARCHENGINE" = "es8" ]; then
             ES_IMAGE="koha/elasticsearch-icu:8.x"
-            ES_IMAGE_TYPE="es"
+            ES_IMAGE_TYPE="elastic"
         fi
 
         if [ "$ARCH" = "arm64v8" ] ; then
@@ -325,7 +325,7 @@ else
             fi
 
             if [ "$ENABLED_SEARCHENGINE" != "" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.${ES_IMAGE_TYPE}.yml"
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/${ES_IMAGE_TYPE}.yml"
                 KOHA_ELASTICSEARCH="yes"
             fi
 

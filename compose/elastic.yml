@@ -1,4 +1,3 @@
-version: '3'
 services:
     es:
         image: ${ES_IMAGE:-koha/elasticsearch-icu:7.x}
