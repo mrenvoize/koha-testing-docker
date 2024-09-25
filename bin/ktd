@@ -338,7 +338,7 @@ else
             fi
 
             if [ "$ENABLE_SSO" != "no" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.sso.yml"
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/sso.yml"
             fi
 
             # worktree? need to jump to the koha clone
