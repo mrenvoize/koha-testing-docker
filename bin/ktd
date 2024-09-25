@@ -330,7 +330,7 @@ else
             fi
 
             if [ "$ENABLE_PLUGINS" != "no" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.plugins.yml"
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/plugins.yml"
             fi
 
             if [ "$ENABLE_SELENIUM" != "no" ]; then
