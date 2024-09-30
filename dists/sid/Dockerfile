@@ -146,21 +146,16 @@ RUN cd /usr/local/share \
 
 # Clone helper repositories
 RUN cd /kohadevbox \
-    && git clone https://gitlab.com/koha-community/koha-misc4dev.git misc4dev \
-    && git clone https://gitlab.com/koha-community/koha-gitify.git gitify \
-    && git clone https://gitlab.com/koha-community/qa-test-tools.git
+    && git clone https://gitlab.com/koha-community/koha-misc4dev.git   misc4dev \
+    && git clone https://gitlab.com/koha-community/koha-gitify.git     gitify \
+    && git clone https://gitlab.com/koha-community/qa-test-tools.git   qa-test-tools
 
-# release-tools and koha-howto
+# How-to
 RUN cd /kohadevbox \
-    && git clone https://gitlab.com/koha-community/release-tools.git \
     && git clone https://gitlab.com/koha-community/koha-howto.git howto \
     && apt-get update \
     && apt-get -y install \
-        libhtml-tableextract-perl \
-        libtext-multimarkdown-perl \
         bugz \
-        libfile-findlib-perl \
-        librest-client-perl \
     && rm -rf /var/cache/apt/archives/* \
     && rm -rf /var/lib/api/lists/*
 
