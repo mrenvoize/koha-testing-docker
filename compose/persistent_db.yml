@@ -1,0 +1,9 @@
+services:
+    koha:
+        environment:
+            USE_EXISTING_DB: yes
+    db:
+        volumes:
+                - db-data:/var/lib/mysql
+volumes:
+    db-data:

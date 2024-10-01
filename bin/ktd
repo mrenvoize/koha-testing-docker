@@ -52,6 +52,7 @@ Options:
     --dbshell             Get into the database
     --run 'command'       Execute a command inside the shell (requires --shell)
     --wait-ready N        Wait N secs until KTD is up and running
+    --persistent-db       Make this instance's DB persistent
     --proxy               Use the proxied version of the compose file
     --name                Sets the project name
     --localrun            Start the container with local run.sh file
@@ -168,6 +169,7 @@ ENABLE_PLUGINS="no"
 ENABLE_SELENIUM="no"
 ENABLE_SSO="no"
 ENABLE_LOCAL_RUN_SCRIPT="no"
+PERSISTENT_DB="no"
 
 KOHA_ELASTICSEARCH="no"
 
@@ -208,6 +210,9 @@ while [ $# -gt 0 ]; do
             shift ;;
         --os2)
             set_searchengine "os2"
+            shift ;;
+        --persistent-db)
+            PERSISTENT_DB="yes"
             shift ;;
         --plugins)
             ENABLE_PLUGINS="yes"
@@ -339,6 +344,10 @@ else
 
             if [ "$ENABLE_SSO" != "no" ]; then
                 COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/sso.yml"
+            fi
+
+            if [ "$PERSISTENT_DB" != "no" ]; then
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/persistent_db.yml"
             fi
 
             # worktree? need to jump to the koha clone
