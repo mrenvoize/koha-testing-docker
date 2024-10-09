@@ -175,10 +175,10 @@ ktd --help
 
 ## Proxied `KTD`
 
-`KTD` ships a configuration for launchinig a local proxy which has two benefits:
+`KTD` ships a configuration for launching a local proxy which has two benefits:
 
 * Allows running all services on port 80
-* Allows running several `KTD` instances in parllel
+* Allows running several `KTD` instances in parallel
 
 ### Start the proxy
 
@@ -245,7 +245,7 @@ DB_IMAGE=mysql:8.0 ktd --proxy --name mysql8 up -d
 ```
 
 We highly recommend the use of [git worktrees](https://git-scm.com/docs/git-worktree) for having different
-codebases on your hardrive without filling it up quickly.
+codebases on your hard drive without filling it up quickly.
 
 ## Getting to the web interface
 
@@ -361,7 +361,7 @@ Please see the [wiki](https://gitlab.com/koha-community/koha-testing-docker/-/wi
 
 ### Hot-reload Plack / automatic reload after code changes
 
-Adding hot-reload to `koha-plack` is not feasable. Here is a slightly hackish way to enable it anyway:
+Adding hot-reload to `koha-plack` is not feasible. Here is a slightly hackish way to enable it anyway:
 
 1. Start ktd
 2. In a second terminal, start a second shell: `ktd --shell`
@@ -455,7 +455,7 @@ git reset --hard origin/main
 
 See Koha [bug 34915](https://bugs.koha-community.org/bugzilla3/show_bug.cgi?id=34915) and [issue #401](https://gitlab.com/koha-community/koha-testing-docker/-/issues/401).
 
-### Another problems?
+### Another problem?
 
 If you are getting another problem you should locate the "Fetching koha-l10n" line in ktd startup and see if you have an error right after.
 This is the kind of output you will have when ktd starts up after a gulp po:update session
@@ -490,4 +490,4 @@ It's likely that last start of _KTD_ failed and needs cleanup. Or that it was sh
 
 # Documentation
 
-For more advanced options and more detailed explainations of how this project works please see the [wiki](https://gitlab.com/koha-community/koha-testing-docker/-/wikis/Koha-Testing-Docker)
+For more advanced options and more detailed explanations of how this project works please see the [wiki](https://gitlab.com/koha-community/koha-testing-docker/-/wikis/Koha-Testing-Docker)
