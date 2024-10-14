@@ -339,7 +339,7 @@ else
             fi
 
             if [ "$ENABLE_SELENIUM" != "no" ]; then
-                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f docker-compose.selenium.yml"
+                COMPOSE_OPTIONS="${COMPOSE_OPTIONS} -f compose/selenium.yml"
             fi
 
             if [ "$ENABLE_SSO" != "no" ]; then
