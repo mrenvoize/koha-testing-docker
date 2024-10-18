@@ -101,13 +101,6 @@ RUN apt-get -y update \
    && rm -rf /var/cache/apt/archives/* \
    && rm -rf /var/lib/api/lists/*
 
-# Install temporary package
-RUN apt-get -y update \
-   && apt-get -y install \
-         libemail-address-perl \
-   && rm -rf /var/cache/apt/archives/* \
-   && rm -rf /var/lib/api/lists/*
-
 # Add nodejs repo
 RUN wget -O- -q https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
       | gpg --dearmor \
