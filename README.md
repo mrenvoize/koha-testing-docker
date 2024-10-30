@@ -426,9 +426,11 @@ koha-translate --update $LANG --dev kohadev
 ### Common problems
 
 #### Detached HEAD
+
 If you get 'You are not currently on a branch' it means that you are not on a branch. This has been by a previous bug in ktd. You should pull a newest koha-testing-docker docker image 
 
 #### Incorrect permissions
+
 If misc/translator/po does not have the correct permissions (not owned by kohadev-koha), the gulp command will fail with something similar to
 
 ```
