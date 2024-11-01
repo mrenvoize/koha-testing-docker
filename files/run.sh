@@ -132,6 +132,7 @@ envsubst "$VARS_TO_SUB" < ${BUILD_DIR}/templates/sudoers               > /etc/su
 mkdir -p ${BUILD_DIR}/bin
 envsubst "$VARS_TO_SUB" < ${BUILD_DIR}/templates/bin/dbic > ${BUILD_DIR}/bin/dbic
 envsubst "$VARS_TO_SUB" < ${BUILD_DIR}/templates/bin/flush_memcached > ${BUILD_DIR}/bin/flush_memcached
+envsubst "$VARS_TO_SUB" < ${BUILD_DIR}/templates/bin/bisect_with_test > ${BUILD_DIR}/bin/bisect_with_test
 
 # Make sure things are executable on /bin.
 chmod +x ${BUILD_DIR}/bin/*
