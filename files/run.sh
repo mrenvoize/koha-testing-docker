@@ -382,6 +382,15 @@ if [ "$RUN_TESTS_AND_EXIT" = "yes" ]; then
 
         perl ${BUILD_DIR}/misc4dev/run_tests.pl --koha-dir=${BUILD_DIR}/koha --run-selenium-tests-only
 
+    elif [ "$TEST_SUITE" = "db-compare-only" ]; then # update the DB, dbic, DB structure
+
+        if [ -z ${DB_COMPARE_WITH} ]; then
+            echo "ERROR: \$TEST_SUITE=db-compare-only requires \$DB_COMPARE_WITH set"
+            exit 2
+        fi
+
+        perl ${BUILD_DIR}/misc4dev/run_tests.pl --koha-dir=${BUILD_DIR}/koha --run-db-compare-only --compare-with "${DB_COMPARE_WITH}"
+
     elif [ "$TEST_SUITE" = "specific-tests" ]; then # run specific tests
 
         if [ -z ${TESTS_TO_RUN} ]; then
