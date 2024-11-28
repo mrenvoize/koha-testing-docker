@@ -121,6 +121,13 @@ set_arch() {
     export ARCH=$ARCH
 }
 
+set_selinux() {
+    SELINUX_LABEL=""
+    if selinuxenabled; then
+        export SELINUX_LABEL=":Z"
+    fi
+}
+
 set_image() {
     if [ "$ARCH" = "arm64v8" ]; then
 
@@ -153,6 +160,7 @@ source $KTD_HOME/.env
 
 set_docker
 set_arch
+set_selinux
 
 WAIT_READY="no"
 
@@ -292,7 +300,7 @@ if [ "$WAIT_READY" != "no" ]; then
     fi
 
     for i in $(seq 1 $WAIT_TIMEOUT); do
-        if docker exec ${PROJECT_NAME}-koha-1 bash -c '[ -e /ktd_ready ]'; then
+        if [ "$DOCKER_BINARY exec ${PROJECT_NAME}_koha_1 bash -c '[ -e /ktd_ready ]' "]; then
             printf "\n"
             exit 0
         else
@@ -308,17 +316,17 @@ fi
 if [ "$SHELL_ACCESS" != "no" ]; then
 
     if [ "$ROOT_ACCESS" != "no" ]; then
-        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-koha-1 bash
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}_koha_1 bash
     elif [ "$DBSHELL_ACCESS" != "no" ]; then
-        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-db-1 mysql -u koha_kohadev -ppassword koha_kohadev
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}_db_1 mysql -u koha_kohadev -ppassword koha_kohadev
     elif [ "$RUN" != "" ]; then
-        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}-koha-1 bash -c "${RUN}"
+        "$DOCKER_BINARY" exec -it ${PROJECT_NAME}_koha_1 bash -c "${RUN}"
     else
-        "$DOCKER_BINARY" exec --user ${KOHA_INSTANCE}-koha --workdir /kohadevbox/koha -ti ${PROJECT_NAME}-koha-1 bash
+        "$DOCKER_BINARY" exec --user ${KOHA_INSTANCE}-koha --workdir /kohadevbox/koha -ti ${PROJECT_NAME}_koha_1 bash
     fi
 elif [ "$FOLLOW_LOGS" != "no" ]; then
 
-    "$DOCKER_BINARY" logs -f ${PROJECT_NAME}-koha-1
+    "$DOCKER_BINARY" logs -f ${PROJECT_NAME}_koha_1
 else
     # run the KTD command
     if [ -n "$KTD_HOME" ]; then
