@@ -4,6 +4,6 @@ services:
             USE_EXISTING_DB: yes
     db:
         volumes:
-                - db-data:/var/lib/mysql
+                - db-data:/var/lib/mysql${SELINUX_LABEL}
 volumes:
     db-data:

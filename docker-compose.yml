@@ -33,7 +33,7 @@ services:
         cap_add:
             - ALL
         volumes:
-            - ${SYNC_REPO}:/kohadevbox/koha:z
+            - ${SYNC_REPO}:/kohadevbox/koha${SELINUX_LABEL}
         tmpfs:
             - /cover_db
             - /tmp

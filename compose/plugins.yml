@@ -1,6 +1,6 @@
 services:
     koha:
         volumes:
-            - ${PLUGINS_DIR}:/kohadevbox/plugins
+            - ${PLUGINS_DIR}:/kohadevbox/plugins${SELINUX_LABEL}
         environment:
             ENABLE_PLUGINS: yes

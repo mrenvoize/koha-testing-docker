@@ -1,4 +1,4 @@
 services:
     koha:
         volumes:
-            - ${KTD_HOME}/files/run.sh:/kohadevbox/run.sh
+            - ${KTD_HOME}/files/run.sh:/kohadevbox/run.sh${SELINUX_LABEL}

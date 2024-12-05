@@ -1,6 +1,6 @@
 services:
     koha:
         volumes:
-            - ${GIT_WORKTREE_SOURCE}:${GIT_WORKTREE_SOURCE}
+            - ${GIT_WORKTREE_SOURCE}:${GIT_WORKTREE_SOURCE}${SELINUX_LABEL}
         environment:
             GIT_WORKTREE_SOURCE: ${GIT_WORKTREE_SOURCE}
