@@ -17,11 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 set -e
 
-usage()
-{
+usage() {
     local scriptname=$0
 
     cat <<EOF
@@ -69,9 +67,7 @@ Note: --es6, --es7, --es8, --os1 and --os2 are mutually exclussive.
 EOF
 }
 
-
-set_docker()
-{
+set_docker() {
     if [ -z "$DOCKER_BINARY" ]; then
 
         export DOCKER_BINARY="$(which docker)"
@@ -79,8 +75,7 @@ set_docker()
     fi
 }
 
-set_searchengine()
-{
+set_searchengine() {
     if [ "$ENABLED_SEARCHENGINE" == "" ]; then
 
         ENABLED_SEARCHENGINE=$1
@@ -102,7 +97,7 @@ set_searchengine()
             ES_IMAGE_TYPE="elastic"
         fi
 
-        if [ "$ARCH" = "arm64v8" ] ; then
+        if [ "$ARCH" = "arm64v8" ]; then
             export ES_IMAGE="${ES_IMAGE}-arm64"
         else
             export ES_IMAGE="${ES_IMAGE}"
@@ -116,23 +111,21 @@ set_searchengine()
     fi
 }
 
-set_arch()
-{
+set_arch() {
     UNAME=$(uname -m)
     ARCH=""
-    if [ "$UNAME" == "arm64" ] ||  [ "$UNAME" == "aarch64" ] ; then
+    if [ "$UNAME" == "arm64" ] || [ "$UNAME" == "aarch64" ]; then
         ARCH="arm64v8"
     fi
 
     export ARCH=$ARCH
 }
 
-set_image()
-{
-    if [ "$ARCH" = "arm64v8" ] ; then
+set_image() {
+    if [ "$ARCH" = "arm64v8" ]; then
 
         # if main, then explicitly set to main-bookworm
-        if [ "$KOHA_IMAGE" == "main" ] || [ -z "${KOHA_IMAGE}" ] ; then
+        if [ "$KOHA_IMAGE" == "main" ] || [ -z "${KOHA_IMAGE}" ]; then
             export KOHA_IMAGE="main-bookworm-arm64v8"
         fi
 
@@ -154,8 +147,8 @@ ENV_KOHA_IMAGE=$KOHA_IMAGE
 source $KTD_HOME/.env
 
 # ENV overrides sourced config, only if not empty
-[ "$ENV_DB_IMAGE"   != "" ] &&   DB_IMAGE=$ENV_DB_IMAGE
-[ "$ENV_ES_IMAGE"   != "" ] &&   ES_IMAGE=$ENV_ES_IMAGE
+[ "$ENV_DB_IMAGE" != "" ] && DB_IMAGE=$ENV_DB_IMAGE
+[ "$ENV_ES_IMAGE" != "" ] && ES_IMAGE=$ENV_ES_IMAGE
 [ "$ENV_KOHA_IMAGE" != "" ] && KOHA_IMAGE=$ENV_KOHA_IMAGE
 
 set_docker
@@ -188,74 +181,97 @@ USE_PROXY="no"
 while [ $# -gt 0 ]; do
 
     case "$1" in
-        -h|--help)
-            usage ; exit 0 ;;
-        -v|--verbose)
-            verbose="yes"
-            shift ;;
-        --logs)
-            FOLLOW_LOGS="yes"
-            break ;;
-        --es6)
-            set_searchengine "es6"
-            shift ;;
-        --es7)
-            set_searchengine "es7"
-            shift ;;
-        --es8)
-            set_searchengine "es8"
-            shift ;;
-        --os1)
-            set_searchengine "os1"
-            shift ;;
-        --os2)
-            set_searchengine "os2"
-            shift ;;
-        --persistent-db)
-            PERSISTENT_DB="yes"
-            shift ;;
-        --plugins)
-            ENABLE_PLUGINS="yes"
-            shift ;;
-        --proxy)
-            USE_PROXY="yes"
-            shift ;;
-        --name)
-            PROJECT_NAME=$2
-            shift 2 ;;
-        --selenium)
-            ENABLE_SELENIUM="yes"
-            shift ;;
-        --sso)
-            ENABLE_SSO="yes"
-            shift ;;
-        --root)
-            ROOT_ACCESS="yes"
-            shift ;;
-        --run)
-            RUN=$2
-            shift 2 ;;
-        --shell)
-            SHELL_ACCESS="yes"
-            shift ;;
-        --dbshell)
-            SHELL_ACCESS="yes"
-            DBSHELL_ACCESS="yes"
-            shift ;;
-        --wait-ready)
-            WAIT_READY="yes"
-            WAIT_TIMEOUT=$2
-            break ;;
-        --localrun)
-            ENABLE_LOCAL_RUN_SCRIPT="yes"
-            shift ;;
-        -*)
-            printf "\nError: expected a docker compose action and got '$1' instead\n\n"
-            usage
-            exit 1 ;;
-        *)
-            # We expect the remaining stuff are the instance names
-            break ;;
+    -h | --help)
+        usage
+        exit 0
+        ;;
+    -v | --verbose)
+        verbose="yes"
+        shift
+        ;;
+    --logs)
+        FOLLOW_LOGS="yes"
+        break
+        ;;
+    --es6)
+        set_searchengine "es6"
+        shift
+        ;;
+    --es7)
+        set_searchengine "es7"
+        shift
+        ;;
+    --es8)
+        set_searchengine "es8"
+        shift
+        ;;
+    --os1)
+        set_searchengine "os1"
+        shift
+        ;;
+    --os2)
+        set_searchengine "os2"
+        shift
+        ;;
+    --persistent-db)
+        PERSISTENT_DB="yes"
+        shift
+        ;;
+    --plugins)
+        ENABLE_PLUGINS="yes"
+        shift
+        ;;
+    --proxy)
+        USE_PROXY="yes"
+        shift
+        ;;
+    --name)
+        PROJECT_NAME=$2
+        shift 2
+        ;;
+    --selenium)
+        ENABLE_SELENIUM="yes"
+        shift
+        ;;
+    --sso)
+        ENABLE_SSO="yes"
+        shift
+        ;;
+    --root)
+        ROOT_ACCESS="yes"
+        shift
+        ;;
+    --run)
+        RUN=$2
+        shift 2
+        ;;
+    --shell)
+        SHELL_ACCESS="yes"
+        shift
+        ;;
+    --dbshell)
+        SHELL_ACCESS="yes"
+        DBSHELL_ACCESS="yes"
+        shift
+        ;;
+    --wait-ready)
+        WAIT_READY="yes"
+        WAIT_TIMEOUT=$2
+        break
+        ;;
+    --localrun)
+        ENABLE_LOCAL_RUN_SCRIPT="yes"
+        shift
+        ;;
+    -*)
+        printf "\nError: expected a docker compose action and got '$1' instead\n\n"
+        usage
+        exit 1
+        ;;
+    *)
+        # We expect the remaining stuff are the instance names
+        break
+        ;;
     esac
 
 done
@@ -270,7 +286,7 @@ if [ "$WAIT_READY" != "no" ]; then
     fi
 
     regex='^[0-9]+$'
-    if ! [[ $WAIT_TIMEOUT =~ $regex ]] ; then
+    if ! [[ $WAIT_TIMEOUT =~ $regex ]]; then
         printf "ERROR: timeout must be a number (got $WAIT_TIMEOUT)\n"
         exit 1
     fi
