@@ -29,6 +29,7 @@ services:
             CPAN: ${CPAN:-no}
             RUN_TESTS_AND_EXIT: ${RUN_TESTS_AND_EXIT}
             LOCAL_USER_ID: ${LOCAL_USER_ID}
+            LOCAL_GROUP_ID: ${LOCAL_GROUP_ID}
             TEST_SUITE: ${TEST_SUITE:-light}
             TESTS_TO_RUN: ${TESTS_TO_RUN:-""}
             TEST_DB_UPGRADE: ${TEST_DB_UPGRADE:-no}
@@ -37,6 +38,11 @@ services:
             SKIP_CYPRESS_CHOWN: ${SKIP_CYPRESS_CHOWN:-no}
             SKIP_L10N: ${SKIP_L10N:-no}
             KOHA_IMAGE: ${KOHA_IMAGE:-main}
+        labels:
+            # Podman-specific UID/GID mapping (ignored by Docker)
+            - io.podman.compose.uidmap=0:1:999
+            - io.podman.compose.uidmap=${LOCAL_USER_ID}:0:1
+            - io.podman.compose.uidmap=$((LOCAL_USER_ID + 1)):1001:64535
         ulimits:
             nofile:
                 soft: 65536
